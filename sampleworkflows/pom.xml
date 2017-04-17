@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <groupId>org.wso2</groupId>
+      <artifactId>wso2</artifactId>
+      <version>5</version>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.wso2.carbon.apimgt</groupId>
+   <artifactId>sampleworkflows</artifactId>
+   <packaging>bundle</packaging>
+   <version>1.0-SNAPSHOT</version>
+   <name>WSO2 API Manager sample workflows</name>
+   <url>http://maven.apache.org</url>
+   <pluginRepositories>
+      <pluginRepository>
+         <id>wso2-maven2-repository-1</id>
+         <url>http://dist.wso2.org/maven2</url>
+      </pluginRepository>
+      <pluginRepository>
+         <id>wso2-maven2-repository-2</id>
+         <url>http://dist.wso2.org/snapshots/maven2</url>
+      </pluginRepository>
+      <pluginRepository>
+         <id>wso2-maven2-repository-3</id>
+         <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
+      </pluginRepository>
+   </pluginRepositories>
+   <dependencies>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>3.8.1</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.wso2.carbon.apimgt</groupId>
+         <artifactId>org.wso2.carbon.apimgt.core</artifactId>
+         <version>${carbon.apimgt.version}</version>
+      </dependency>
+        	<dependency>
+    	<groupId>org.apache.httpcomponents</groupId>
+    	<artifactId>httpclient</artifactId>
+    	<version>4.5.3</version>
+	</dependency>
+	<dependency>
+	    <groupId>commons-io</groupId>
+	    <artifactId>commons-io</artifactId>
+	    <version>2.4</version>
+	</dependency>
+    <dependency>
+        <groupId>com.googlecode.json-simple.wso2</groupId>
+        <artifactId>json-simple</artifactId>
+        <version>1.1.wso2v1</version>
+    </dependency>
+   </dependencies>
+   <properties>
+      <export.package>org.wso2.carbon.apimgt.sampleworkflow.*; version="${project.version}"</export.package>
+      <import.package>
+            org.osgi.framework.*;version="${osgi.framework.import.version.range}",         
+            org.slf4j.*;version="${slf4j.logging.package.import.version.range}",
+            org.wso2.carbon.apimgt.core.*; version="${carbon.apimgt.import.pkg.version}",        
+            org.apache.commons.*,
+            org.apache.http.*,    
+            org.json.simple.*,
+	  </import.package>
+      <carbon.apimgt.version>7.0.4-SNAPSHOT</carbon.apimgt.version>
+      <slf4j.logging.package.import.version.range>[1.7.1, 2.0.0)</slf4j.logging.package.import.version.range>
+      <osgi.framework.import.version.range>[1.8.0, 2.0.0)</osgi.framework.import.version.range>     
+      <carbon.apimgt.import.pkg.version>[7.0.0,8.0.0)</carbon.apimgt.import.pkg.version>
+   </properties>
+</project>

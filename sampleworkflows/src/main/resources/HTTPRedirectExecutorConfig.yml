@@ -1,0 +1,5 @@
+   executor: org.wso2.carbon.apimgt.sampleworkflow.HTTPRedirectExecutor
+   property: 
+    - name: redirectUrl
+      value: http://localhost:7777/testserver
+    
