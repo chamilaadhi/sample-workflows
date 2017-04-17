@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="SampleApprovalWorkFlowProcess" name="SampleApprovalWorkFlowProcess" isExecutable="true">
+    <startEvent id="startevent" name="Start">
+      <extensionElements>
+        <activiti:formProperty id="wfReference" name="Workflow Reference" type="string" variable="wfReference" required="true"></activiti:formProperty>
+        <activiti:formProperty id="clientId" name="Client ID" type="string" variable="clientId" required="true"></activiti:formProperty>
+        <activiti:formProperty id="clientSecret" name="Client Secret" type="string" variable="clientSecret" required="true"></activiti:formProperty>
+        <activiti:formProperty id="scope" name="Scope" type="string" variable="scope" required="true"></activiti:formProperty>
+        <activiti:formProperty id="tokenAPI" name="Token API" type="string" variable="tokenAPI" required="true"></activiti:formProperty>
+        <activiti:formProperty id="callbackUrl" name="Callback Url" type="string" variable="callbackUrl" required="true"></activiti:formProperty>
+        <activiti:formProperty id="description" name="Description" type="string" variable="description" default="Approval task request for API Manager workflow task"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="approvalUserTask" name="API Manager Workflow Approval Task" activiti:candidateUsers="admin,kermit" activiti:candidateGroups="admin">
+      <documentation>${description}</documentation>
+      <extensionElements>
+        <activiti:formProperty id="approval" name="Approval" type="enum" variable="approval" default="REJECTED" required="true">
+          <activiti:value id="APPROVED" name="APPROVED"></activiti:value>
+          <activiti:value id="REJECTED" name="REJECTED"></activiti:value>
+        </activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow1" sourceRef="startevent" targetRef="approvalUserTask"></sequenceFlow>
+    <serviceTask id="tokentask" name="Token Task" activiti:class="org.wso2.carbon.apimgt.bpmn.RestTask">
+      <extensionElements>
+        <activiti:field name="basicAuthUsername">
+          <activiti:expression><![CDATA[${clientId}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="basicAuthPassword">
+          <activiti:expression><![CDATA[${clientSecret}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="serviceURL">
+          <activiti:expression><![CDATA[${tokenAPI}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="method">
+          <activiti:string><![CDATA[POST]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="input">
+          <activiti:expression><![CDATA[grant_type=client_credentials&scope=${scope}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="headers">
+          <activiti:string><![CDATA[{"Content-Type" : "application/x-www-form-urlencoded"}]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="outputMappings">
+          <activiti:expression><![CDATA[token:access_token]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="description">
+          <activiti:string><![CDATA[Token request service task]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="callbackTask" name="Callback Task" activiti:class="org.wso2.carbon.apimgt.bpmn.RestTask">
+      <extensionElements>
+        <activiti:field name="method">
+          <activiti:string><![CDATA[POST]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="input">
+          <activiti:expression><![CDATA[{
+"status" : "${approval}", 
+"attributes" : {
+  }
+}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="serviceURL">
+          <activiti:expression><![CDATA[${callbackUrl}?workflowReferenceId=${wfReference}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="headers">
+          <activiti:expression><![CDATA[{"Authorization" : "Bearer ${token}" , "Content-Type" : "application/json" }]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="description">
+          <activiti:string><![CDATA[Workflow callback task]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow2" sourceRef="approvalUserTask" targetRef="tokentask"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="tokentask" targetRef="callbackTask"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="callbackTask" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_SampleApprovalWorkFlowProcess">
+    <bpmndi:BPMNPlane bpmnElement="SampleApprovalWorkFlowProcess" id="BPMNPlane_SampleApprovalWorkFlowProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent" id="BPMNShape_startevent">
+        <omgdc:Bounds height="35.0" width="35.0" x="180.0" y="250.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="approvalUserTask" id="BPMNShape_approvalUserTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="350.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="960.0" y="250.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="tokentask" id="BPMNShape_tokentask">
+        <omgdc:Bounds height="55.0" width="105.0" x="540.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="callbackTask" id="BPMNShape_callbackTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="710.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="215.0" y="267.0"></omgdi:waypoint>
+        <omgdi:waypoint x="350.0" y="267.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="455.0" y="267.0"></omgdi:waypoint>
+        <omgdi:waypoint x="540.0" y="267.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="645.0" y="267.0"></omgdi:waypoint>
+        <omgdi:waypoint x="710.0" y="267.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="815.0" y="267.0"></omgdi:waypoint>
+        <omgdi:waypoint x="960.0" y="267.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
