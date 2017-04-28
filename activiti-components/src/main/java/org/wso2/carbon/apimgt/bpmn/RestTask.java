@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.wso2.carbon.apimgt.bpmn.util.RestResponse;
 import org.wso2.carbon.apimgt.bpmn.util.RestUtil;
 
@@ -74,6 +75,9 @@ public class RestTask implements JavaDelegate {
             if (HttpPost.METHOD_NAME.equalsIgnoreCase(method.getValue(execution).toString().trim())) {
                 String inputContent = input.getValue(execution).toString();
                 response = RestUtil.invokePOST(new URI(url), jsonHeaders, inputContent, authHeader);
+            } else if (HttpPut.METHOD_NAME.equalsIgnoreCase(method.getValue(execution).toString().trim())) {
+                String inputContent = input.getValue(execution).toString();
+                response = RestUtil.invokePUT(new URI(url), jsonHeaders, inputContent, authHeader);
             } else if (HttpGet.METHOD_NAME.equalsIgnoreCase(method.getValue(execution).toString().trim())) {
                 response = RestUtil.invokeGET(new URI(url), jsonHeaders, authHeader);
             } else {

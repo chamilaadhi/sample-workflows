@@ -54,7 +54,7 @@
     <serviceTask id="callbackTask" name="Callback Task" activiti:class="org.wso2.carbon.apimgt.bpmn.RestTask">
       <extensionElements>
         <activiti:field name="method">
-          <activiti:string><![CDATA[POST]]></activiti:string>
+          <activiti:string><![CDATA[PUT]]></activiti:string>
         </activiti:field>
         <activiti:field name="input">
           <activiti:expression><![CDATA[{
@@ -64,7 +64,7 @@
 }]]></activiti:expression>
         </activiti:field>
         <activiti:field name="serviceURL">
-          <activiti:expression><![CDATA[${callbackUrl}?workflowReferenceId=${wfReference}]]></activiti:expression>
+          <activiti:expression><![CDATA[${callbackUrl}/${wfReference}]]></activiti:expression>
         </activiti:field>
         <activiti:field name="headers">
           <activiti:expression><![CDATA[{"Authorization" : "Bearer ${token}" , "Content-Type" : "application/json" }]]></activiti:expression>
