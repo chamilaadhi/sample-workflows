@@ -33,13 +33,13 @@ public class HTTPRedirectExecutor implements WorkflowExecutor {
         HttpWorkflowResponse workflowResponse = new HttpWorkflowResponse();
         workflowResponse.setRedirectConfirmationMsg("This is redirection message");
         
-        //additional parameters will be appended to the url as query parameters
-        workflowResponse.setAdditionalParameters("wfref", workflow.getExternalWorkflowReference());
+        String url = redirectUrl + "?externalRef=" + workflow.getExternalWorkflowReference();       
+
         workflowResponse.setAdditionalParameters("env", "dev");
-        workflowResponse.setRedirectUrl(redirectUrl);
+        workflowResponse.setRedirectUrl(url);
 
         // in this sample we directly approve the task. set it to WorkflowStatus.CREATED to hold
-        workflowResponse.setWorkflowStatus(WorkflowStatus.APPROVED);
+        workflowResponse.setWorkflowStatus(WorkflowStatus.CREATED);
         return workflowResponse;
     }
 
