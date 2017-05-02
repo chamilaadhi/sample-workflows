@@ -24,7 +24,7 @@ import java.util.Map;
 public class BPMNApprovalExecutor implements WorkflowExecutor {
 
     private static final Logger log = LoggerFactory.getLogger(BPMNApprovalExecutor.class);
-    private static final String WF_SCOPE = "apim:api_workflow";
+    private static final String WF_SCOPE = "apim:workflow_approve";
     private static final String RUNTIME_INSTANCE_RESOURCE_PATH = "/runtime/process-instances";
 
     private String clientId;

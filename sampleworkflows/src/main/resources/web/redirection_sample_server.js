@@ -12,7 +12,7 @@ var server = http.createServer(function(request, response) {
 
 var query = url.parse(request.url,true).query;
 var authHeader = new Buffer(clientId + ":" + clientSecret).toString('base64');
-var curl = "curl -k -X POST -H \"Authorization: Bearer " +authHeader+ "\" -H \"Content-Type: application/x-www-form-urlencoded\"  -d  'grant_type=password&username=Smith&password=Smith&validity_period=3600&scope=apim:api_workflow' \"https://localhost:9292/keyserver/oauth2/token\""
+var curl = "curl -k -X POST -H \"Authorization: Bearer " +authHeader+ "\" -H \"Content-Type: application/x-www-form-urlencoded\"  -d  'grant_type=password&username=Smith&password=Smith&validity_period=3600&scope=apim:workflow_approve' \"https://localhost:9292/keyserver/oauth2/token\""
 
 
 var approveCurl = 
