@@ -13,7 +13,7 @@
     - name: tokenAPI
       value: https://localhost:9292/keyserver/oauth2/token
     - name: callbackUrl
-      value: https://localhost:9292/api/am/store/v1.0/workflows/update-workflow-status
+      value: https://localhost:9292/api/am/store/v1.0/workflows
     - name: serviceEndpoint
       value: http://localhost:8080/activiti-rest/service
 

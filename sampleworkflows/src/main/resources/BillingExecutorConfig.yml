@@ -1,0 +1,9 @@
+   executor: org.wso2.carbon.apimgt.sampleworkflow.BillingExecutor
+   property: 
+    - name: billingEngineUrl
+      value: http://localhost:8080/apim-billing-engine-2.0.0/app/main
+    - name: apimStoreUrl
+      value: https://localhost:9292/store/
+    - name: callbackUrl
+      value: https://localhost:9292/api/am/store/v1.0/workflows
+    
