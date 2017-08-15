@@ -6,11 +6,12 @@ import org.wso2.carbon.apimgt.core.api.WorkflowExecutor;
 import org.wso2.carbon.apimgt.core.api.WorkflowResponse;
 import org.wso2.carbon.apimgt.core.exception.APIManagementException;
 import org.wso2.carbon.apimgt.core.exception.WorkflowException;
-import org.wso2.carbon.apimgt.core.models.SubscriptionWorkflow;
-import org.wso2.carbon.apimgt.core.models.Workflow;
+
 import org.wso2.carbon.apimgt.core.models.WorkflowStatus;
 import org.wso2.carbon.apimgt.core.workflow.GeneralWorkflowResponse;
 import org.wso2.carbon.apimgt.core.workflow.HttpWorkflowResponse;
+import org.wso2.carbon.apimgt.core.workflow.SubscriptionCreationWorkflow;
+import org.wso2.carbon.apimgt.core.workflow.Workflow;
 import org.wso2.carbon.apimgt.sampleworkflow.dao.BillingDao;
 
 /**
@@ -51,11 +52,11 @@ public class BillingExecutor implements WorkflowExecutor {
 
     public WorkflowResponse execute(Workflow workflow) throws WorkflowException {
         log.info("Executing Workflow Executor: BillingExecutor#execute() ");
-        SubscriptionWorkflow subsWorkflow;
+        SubscriptionCreationWorkflow subsWorkflow;
         boolean userExists = false;
 
-        if (workflow instanceof SubscriptionWorkflow) {
-            subsWorkflow = (SubscriptionWorkflow) workflow;
+        if (workflow instanceof SubscriptionCreationWorkflow) {
+            subsWorkflow = (SubscriptionCreationWorkflow) workflow;
 
             try {
                 BillingDao billingDao = BillingDao.getInstance();

@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.wso2.carbon.apimgt.core.api.WorkflowExecutor;
 import org.wso2.carbon.apimgt.core.api.WorkflowResponse;
 import org.wso2.carbon.apimgt.core.exception.WorkflowException;
-import org.wso2.carbon.apimgt.core.models.Workflow;
 import org.wso2.carbon.apimgt.core.models.WorkflowStatus;
 import org.wso2.carbon.apimgt.core.workflow.GeneralWorkflowResponse;
 import org.wso2.carbon.apimgt.core.workflow.HttpWorkflowResponse;
+import org.wso2.carbon.apimgt.core.workflow.Workflow;
 
 /**
  * Executor to demonstrate workflow with redirection to external page capability. refer

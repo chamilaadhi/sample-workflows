@@ -1,17 +1,15 @@
 package org.wso2.carbon.apimgt.sampleworkflow.util;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -28,51 +26,58 @@ public class RestUtil {
      * @return RestResponse RestResponse
      * @throws Exception
      */
-    public static RestResponse doPost(String uri, String payload, Map<String, String> headersMap) throws Exception {
+    public static RestResponse doPost(String uri, String payload, Map<String, String> headersMap)  {
         
-        HttpPost httpPost = null;
-        CloseableHttpResponse response = null;
-        CloseableHttpClient client = null;
         String output = null;
         int httpStatus = 0;
-  
+
+        BufferedReader in = null;
+        OutputStream outputStream = null;
+        URL url;
         try {
+            url = new URL(uri);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
-            client = HttpClients.createDefault();   
-            httpPost = new HttpPost(uri);
-            if (log.isDebugEnabled()) {
-                log.debug("POST : " + uri);
-                log.debug("payload : " + payload);
+            con.setRequestMethod("POST");
+
+            for (Map.Entry<String, String> entry : headersMap.entrySet()) {
+                con.setRequestProperty(entry.getKey(), entry.getValue());
             }
-            httpPost.setEntity(new StringEntity(payload));
-            if (headersMap != null) {
-                for (Map.Entry<String, String> entry : headersMap.entrySet()) {
-                    httpPost.addHeader(entry.getKey(), entry.getValue());
-                    if (log.isDebugEnabled()) {
-                        log.debug("Headers : " + entry.getKey() + ":" + entry.getValue());
-                    }
-                }
-            }            
-            response = client.execute(httpPost);
-            output = IOUtils.toString(response.getEntity().getContent());           
+            // Send post request
+            con.setDoOutput(true);
+            outputStream = con.getOutputStream();
 
-            httpStatus = response.getStatusLine().getStatusCode();
+            outputStream.write(payload.getBytes("UTF-8"));
+            httpStatus = con.getResponseCode();
 
-            if (log.isDebugEnabled()) {
-                log.debug("Response: " + httpStatus + " : " + output);
-            }
-            EntityUtils.consume(response.getEntity());
+            in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }      
+            output = response.toString();
+            
+        } catch (MalformedURLException e) {
+            log.error("Malformed url " , e);
+        } catch (IOException e) {
+            log.error("I/O exception " , e);
         } finally {
-            if (response != null) {
-                IOUtils.closeQuietly(response);
-            }
-            if (client != null) {
-                IOUtils.closeQuietly(client);
-            }
-            if (httpPost != null) {
-                httpPost.releaseConnection();
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (outputStream != null) {             
+                    outputStream.close();
+                }
+
+            } catch (IOException e) {
+                log.error("I/O exception " , e);
             }
         }
+
         return new RestResponse(output, httpStatus);
     }
     
@@ -83,49 +88,49 @@ public class RestUtil {
      * @return RestResponse RestResponse
      * @throws Exception
      */
-    public static RestResponse doGet(String uri, Map<String, String> headersMap) throws Exception {
+    public static RestResponse doGet(String uri, Map<String, String> headersMap) {
         
-        HttpGet httpGet = null;
-        CloseableHttpResponse response = null;
-        CloseableHttpClient client = null;
         String output = null;
         int httpStatus = 0;
-  
+        BufferedReader in = null;
+        URL url;
         try {
+            url = new URL(uri);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
-            client = HttpClients.createDefault();   
-            httpGet = new HttpGet(uri);
-            if (log.isDebugEnabled()) {
-                log.debug("GET : " + uri);                
-            }
- 
-            if (headersMap != null) {
-                for (Map.Entry<String, String> entry : headersMap.entrySet()) {
-                    httpGet.addHeader(entry.getKey(), entry.getValue());
-                    if (log.isDebugEnabled()) {
-                        log.debug("Headers : " + entry.getKey() + ":" + entry.getValue());
-                    }
-                }
-            }            
-            response = client.execute(httpGet);
-            output = IOUtils.toString(response.getEntity().getContent());
-            httpStatus = response.getStatusLine().getStatusCode();
+            con.setRequestMethod("GET");
 
-            if (log.isDebugEnabled()) {
-                log.debug("Response: " + httpStatus + " : " + output);
+            for (Map.Entry<String, String> entry : headersMap.entrySet()) {
+                con.setRequestProperty(entry.getKey(), entry.getValue());
             }
-            EntityUtils.consume(response.getEntity());
+
+            httpStatus = con.getResponseCode();
+
+            in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+
+            output = response.toString();
+        } catch (MalformedURLException e) {
+            log.error("Malformed url " , e);
+        } catch (IOException e) {
+            log.error("I/O exception " , e);
         } finally {
-            if (response != null) {
-                IOUtils.closeQuietly(response);
+            try {
+                if (in != null) {
+                    in.close();
+                }
+   
+            } catch (IOException e) {
+                log.error("I/O exception " , e);
             }
-            if (client != null) {
-                IOUtils.closeQuietly(client);
-            }
-            if (httpGet != null) {
-                httpGet.releaseConnection();
-            }
-        }
+        }       
+
         return new RestResponse(output, httpStatus);
     }
     
@@ -136,48 +141,50 @@ public class RestUtil {
      * @return RestResponse RestResponse
      * @throws Exception
      */
-    public static RestResponse doDelete(String uri, Map<String, String> headersMap) throws Exception {
+    public static RestResponse doDelete(String uri, Map<String, String> headersMap) {
         
-        HttpDelete httpDelete = null;
-        CloseableHttpResponse response = null;
-        CloseableHttpClient client = null;
-        //String output = null;
+        String output = null;
         int httpStatus = 0;
-  
+        BufferedReader in = null;
+        URL url;
         try {
+            url = new URL(uri);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
-            client = HttpClients.createDefault();   
-            httpDelete = new HttpDelete(uri);
-            if (log.isDebugEnabled()) {
-                log.debug("DELETE : " + uri);                
-            }
- 
-            if (headersMap != null) {
-                for (Map.Entry<String, String> entry : headersMap.entrySet()) {
-                    httpDelete.addHeader(entry.getKey(), entry.getValue());
-                    if (log.isDebugEnabled()) {
-                        log.debug("Headers : " + entry.getKey() + ":" + entry.getValue());
-                    }
-                }
-            }            
-            response = client.execute(httpDelete);          
-            httpStatus = response.getStatusLine().getStatusCode();
+            con.setRequestMethod("DELETE");
 
-            if (log.isDebugEnabled()) {
-                log.debug("Response: " + httpStatus);
+            for (Map.Entry<String, String> entry : headersMap.entrySet()) {
+                con.setRequestProperty(entry.getKey(), entry.getValue());
             }
-            EntityUtils.consume(response.getEntity());
+
+            httpStatus = con.getResponseCode();
+
+            in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+
+            output = response.toString();
+        } catch (MalformedURLException e) {
+            log.error("Malformed url " , e);
+        } catch (IOException e) {
+            log.error("I/O exception " , e);
         } finally {
-            if (response != null) {
-                IOUtils.closeQuietly(response);
+            try {
+                if (in != null) {
+                    in.close();
+                }
+   
+            } catch (IOException e) {
+                log.error("I/O exception " , e);
             }
-            if (client != null) {
-                IOUtils.closeQuietly(client);
-            }
-            if (httpDelete != null) {
-                httpDelete.releaseConnection();
-            }
-        }
-        return new RestResponse(null, httpStatus);
+        }        
+
+        return new RestResponse(output, httpStatus);
     }
+
 }

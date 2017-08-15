@@ -1,5 +1,5 @@
    executor: org.wso2.carbon.apimgt.sampleworkflow.BPMNApprovalExecutor
-   property: 
+   property:
     - name: processDefinitionKey
       value: SampleApprovalWorkFlowProcess
     - name: username
@@ -7,13 +7,13 @@
     - name: password
       value: kermit
     - name: clientId
-      value: b606af54-9db4-4d45-a315-bb4604568ac0
+      value: MLrrwN6WVs3SEUzJocTm_zj0HXga
     - name: clientSecret
-      value: 7e7eadad-0785-438e-89a2-113f67d206a5
+      value: V1CEAmcQtWLuO8WbYr0yXpGfRCEa
     - name: tokenAPI
-      value: https://localhost:9292/keyserver/oauth2/token
+      value: https://localhost:9443/oauth2/token
     - name: callbackUrl
-      value: https://localhost:9292/api/am/store/v1.0/workflows
+      value: https://localhost:9292/api/am/admin/v1.0/workflows
     - name: serviceEndpoint
       value: http://localhost:8080/activiti-rest/service
 
